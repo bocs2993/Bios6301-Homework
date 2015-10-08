@@ -1,7 +1,7 @@
 ---
 title: 'Bios 6301: Assignment 1'
 author: 'Brooklyn Stanley'
-output: html_document
+output: pdf_document
 ---
 
 *(informally) Due Tuesday, 08 September, 1:00 PM*
@@ -241,6 +241,8 @@ model summary? (3 points)
 t.test(women$los, men$los)
 t.test(women$los, men$los, var.equal = T)
 ```
+
+When `var.equal` is set to TRUE, the p-value equals the p-value for gender form the model summary.
 
 An alternative way to call `t.test` is to use a formula.
 
