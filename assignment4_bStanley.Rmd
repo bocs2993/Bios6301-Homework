@@ -119,7 +119,7 @@ craps <- function(output=T) {
 
 ```{r}
 set.seed(100)
-games <- replicate(10, craps())
+games <- replicate(3, craps())
 ```
 
 3. Find a seed that will win ten straight games.  Consider adding an argument to your function that disables output. Show the output of the ten games. (5 points)
