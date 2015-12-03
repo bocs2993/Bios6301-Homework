@@ -41,11 +41,12 @@ next_gen <- function(pop,gen) {
 
 Use the function `next_gen` to generate nine generations (you already have the first), then use the function `hist` to plot the distribution of male heights in each generation (this will require multiple calls to `hist`). The phenomenon you see is called regression to the mean.  Provide (at least) minimal decorations such as title and x-axis labels.
 
-```{r}
+```{r, tidy=T}
 hist(pop$m, main="Male Height in Generation 1")
 for (i in 2:9){
   poptemp <- next_gen(pop,i)
-  hist(poptemp$m, main=paste("Male Height in Generation",i), breaks=9)
+  hist(poptemp$m, main=paste("Male Height in Generation",i), breaks=9, xlab=" ")
+  cat('\n','\n')
   pop <- rbind(pop, poptemp)
 }
 ```
@@ -53,6 +54,11 @@ for (i in 2:9){
 ### Question 2 ###
 
 **10 points**
+
+```{r}
+library(ggplot2)
+```
+
 Use the simulated results from question 1 to reproduce (as closely as possible) the following plot in ggplot2.
 
 ![generations plot](http://d.pr/i/Xh0d+)
@@ -128,7 +134,7 @@ class(patient)
 
 2. Write a `medicalRecord` method for the generic function `mean`, which returns averages for pulse, temperature and fluids. Also write a `medicalRecord` method for `print`, which employs some nice formatting, perhaps arranging measurements by date, and `plot`, that generates a composite plot of measurements over time.  Call each function for the medical record created in part 1. (5 points)
 
-```{r}
+```{r, tidy=T}
 mean.medicalRecord <- function(patient){
   pul <- mean(patient$pulse)
   tem <- mean(patient$temperature)
@@ -150,16 +156,29 @@ print.medicalRecord <- function(patient) {
 # Since each measurement has such difference scales, I chose to plot them on separate plots 
 ## so the graphs could be the most informative.
 plot.medicalRecord <- function(patient) {
+  sorted <- sort(patient$date_of_admission)
+  indices <- c()
+  for (i in 1:length(sorted)){
+    indices <- c(indices, which(patient$date_of_admission == sorted[i]))
+  }
+  temp <- c()
+  puls <- c()
+  flui <- c()
+  for (i in indices){
+    temp <- c(temp, patient$temperature[i])
+    puls <- c(puls, patient$pulse[i])
+    flui <- c(flui, patient$fluid_intake[i])
+  }
   par(mfrow=c(1,3))
-  plot(patient$date_of_admission,patient$temperature,type='b', xaxt='n',col='red',
+  plot(sorted,temp,type='b', xaxt='n',col='red',
        xlab="Date of Admission", ylab = "Temperature")
-  axis(1, at=patient$date_of_admission,labels=patient$date_of_admission)
-  plot(patient$date_of_admission,patient$pulse,type='b', xaxt='n',col="green",
+  axis(1, at=sorted,labels=sorted)
+  plot(sorted,puls,type='b', xaxt='n',col="green",
        ylab = "Pulse", xlab= "Date of Admission")
-  axis(1, at=patient$date_of_admission,labels=patient$date_of_admission)
-  plot(patient$date_of_admission,patient$fluid_intake,type='b', xaxt='n',col="blue",
+  axis(1, at=sorted,labels=sorted)
+  plot(sorted,flui,type='b', xaxt='n',col="blue",
        ylab = "Fluid Intake", xlab= "Date of Admission")
-  axis(1, at=patient$date_of_admission,labels=patient$date_of_admission)
+  axis(1, at=sorted,labels=sorted)
   mtext(paste('Measurements for Patient: ',patient$name), outer = TRUE)
 }
 methods(class='medicalRecord')
@@ -171,18 +190,38 @@ plot(patient)
 3. Create a further class for a cohort (group) of patients, and write methods for `mean` and `print` which, when applied to a cohort, apply mean or print to each patient contained in the cohort. Hint: think of this as a "container" for patients.  Reset the RNG seed to 8 and create a cohort of ten patients, then show the output for `mean` and `print`. (5 points)
 
 ```{r}
-# function of how many people you want in cohort
+# Function of how many people you want in cohort
+# Assumes there is at least 2 patients in the cohort
 cohortmaker <- function(number){
   cohort <- list(medRec())
   for (i in 2:number){
     tempPatient <- medRec()
     cohort[[i]] <- tempPatient
   }
-  return(cohort)
   class(cohort) <- "cohort"
+  return(cohort)
 }
 
+set.seed(8)
 cohort <- cohortmaker(10)
+
+mean.cohort <- function(cohort){
+  for (i in 1:length(cohort)){
+    cat('--> ', cohort[[i]]$name, '\n')
+    print(mean(cohort[[i]]))
+  }
+}
+
+mean(cohort)
+
+print.cohort <- function(cohort){
+  for (i in 1:length(cohort)){
+    print(cohort[[i]])
+    cat('-----------','\n')
+  }
+}
+
+print(cohort)
 ```
 
 ### Question 5 ###
