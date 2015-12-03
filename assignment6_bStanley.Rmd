@@ -160,12 +160,29 @@ plot.medicalRecord <- function(patient) {
   plot(patient$date_of_admission,patient$fluid_intake,type='b', xaxt='n',col="blue",
        ylab = "Fluid Intake", xlab= "Date of Admission")
   axis(1, at=patient$date_of_admission,labels=patient$date_of_admission)
+  mtext(paste('Measurements for Patient: ',patient$name), outer = TRUE)
 }
-methods(class='employee')
+methods(class='medicalRecord')
+mean(patient)
+print(patient)
+plot(patient)
 ```
 
 3. Create a further class for a cohort (group) of patients, and write methods for `mean` and `print` which, when applied to a cohort, apply mean or print to each patient contained in the cohort. Hint: think of this as a "container" for patients.  Reset the RNG seed to 8 and create a cohort of ten patients, then show the output for `mean` and `print`. (5 points)
 
+```{r}
+# function of how many people you want in cohort
+cohortmaker <- function(number){
+  cohort <- list(medRec())
+  for (i in 2:number){
+    tempPatient <- medRec()
+    cohort[[i]] <- tempPatient
+  }
+  return(cohort)
+}
+
+cohort <- cohortmaker(10)
+```
 
 ### Question 5 ###
 
