@@ -179,6 +179,7 @@ cohortmaker <- function(number){
     cohort[[i]] <- tempPatient
   }
   return(cohort)
+  class(cohort) <- "cohort"
 }
 
 cohort <- cohortmaker(10)
